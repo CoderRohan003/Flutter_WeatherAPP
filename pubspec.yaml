@@ -59,7 +59,9 @@ flutter:
     - assets/snow.jpeg
     - assets/thunderstorm.jpeg
     - assets/default.jpeg
-    - assets/Drizzle.jpeg
+    - assets/drizzle.jpg
+    - assets/ash.jpg
+    - assets/tornado.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see

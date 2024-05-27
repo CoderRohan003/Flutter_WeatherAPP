@@ -23,6 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
     'sunny': 'assets/sunny.jpeg',
     'Snow': 'assets/snow.jpeg',
     'Thunderstorm': 'assets/thunderstorm.jpeg',
+    'Ash' : 'assets/ash.jpg',
+    'Drizzle' : 'assets/drizzle.jpg',
+    'Tornado' : 'assets/tornado.jpg',
     'default': 'assets/default.jpeg', // Fallback image
   };
 
