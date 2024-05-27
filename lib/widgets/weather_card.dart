@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/weather_data.dart';
-import 'package:weather_api_project/providers/settings_provider.dart';
+import '../providers/settings_provider.dart';
 
 class WeatherCard extends StatelessWidget {
   final WeatherData weatherData;
@@ -10,8 +10,26 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Map weather conditions to their corresponding colors
+    Map<String, Color> weatherColors = {
+      'Clear': Colors.yellow[700]!,
+      'Haze': Colors.amber,
+      'Rain': Color.fromARGB(255, 25, 210, 53),
+      'Clouds': Color.fromARGB(178, 255, 124, 246)!,
+      'Sunny': Colors.orange[600]!,
+      'Snow': Colors.blueGrey[300]!,
+      'Thunderstorm': Colors.purple[700]!,
+      'Ash': Colors.grey[500]!,
+      'Drizzle': Colors.lightBlue[300]!,
+      'Tornado': Colors.deepPurple[800]!,
+      'Default': Colors.amber[400]!, // Fallback color
+    };
+
+    // Determine the color for the current weather condition
+    Color cardColor = weatherColors[weatherData.main] ?? weatherColors['Default']!;
+
     return Card(
-      color: const Color.fromARGB(176, 255, 255, 255),
+      color: cardColor.withOpacity(0.9), 
       elevation: 4.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
@@ -27,13 +45,12 @@ class WeatherCard extends StatelessWidget {
                 Text(
                   weatherData.cityName,
                   style: const TextStyle(
-                    color: Color.fromARGB(255, 5, 5, 5),
+                    color: Colors.black,
                     fontSize: 21,
                     fontWeight: FontWeight.bold,
-                fontFamily: 'Roboto', 
+                    fontFamily: 'Roboto',
                   ),
                 ),
-                
               ],
             ),
             const SizedBox(height: 10),
@@ -49,17 +66,17 @@ class WeatherCard extends StatelessWidget {
                     Text(
                       'Temperature: ${temperature.toStringAsFixed(1)}$unit',
                       style: const TextStyle(
-                        color: Color.fromARGB(255, 5, 5, 5),
+                        color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                    fontFamily: 'Roboto', 
+                        fontFamily: 'Roboto',
                       ),
                     ),
                     Image.network(
-                  'http://openweathermap.org/img/wn/${weatherData.icon}.png',
-                  width: 60,
-                  height:60,
-                ),
+                      'http://openweathermap.org/img/wn/${weatherData.icon}.png',
+                      width: 70,
+                      height: 60,
+                    ),
                   ],
                 );
               },
@@ -67,10 +84,10 @@ class WeatherCard extends StatelessWidget {
             Text(
               'Weather: ${weatherData.description}',
               style: const TextStyle(
-                color: Color.fromARGB(255, 5, 5, 5),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                fontFamily: 'Roboto', 
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Roboto',
               ),
             ),
           ],
