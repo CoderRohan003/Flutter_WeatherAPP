@@ -17,12 +17,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Map weather descriptions to their corresponding asset paths
   Map<String, String> weatherImages = {
-    'haze': 'assets/haze.jpeg',
-    'rain': 'assets/rain.jpeg',
-    'clouds': 'assets/cloudy.jpeg',
+    'Haze': 'assets/hazy.jpeg',
+    'Rain': 'assets/rain.jpeg',
+    'Clouds': 'assets/cloudy.jpeg',
     'sunny': 'assets/sunny.jpeg',
-    'snow': 'assets/snow.jpeg',
-    'thunderstorm': 'assets/thunderstorm.jpeg',
+    'Snow': 'assets/snow.jpeg',
+    'Thunderstorm': 'assets/thunderstorm.jpeg',
     'default': 'assets/default.jpeg', // Fallback image
   };
 
@@ -34,14 +34,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _fetchWeatherData(String location) async {
     try {
-      WeatherData weatherData = await _weatherApiService.getWeatherData(location);
+      WeatherData weatherData =
+          await _weatherApiService.getWeatherData(location);
       setState(() {
         _weatherData = weatherData;
       });
-      print("Weather Data Fetched: ${weatherData.description}"); 
+      print("Weather Data Fetched: ${weatherData.main}"); // Debug output
     } catch (e) {
       print("Error fetching weather data: $e");
     }
+  }
+
+  String _preprocessWeatherDescription(String description) {
+    // Preprocess certain weather descriptions to match the mapped strings
+    if (description.toLowerCase().contains('overcast clouds')) {
+      return 'cloudy';
+    }
+    // Add more preprocessing rules if needed
+    return description.toLowerCase();
   }
 
   void _changeLocation() {
@@ -91,14 +101,28 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Weather App'),
+        backgroundColor: Colors.amber,
+        elevation: 6,
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Weather App',
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
+            color: Colors.black,
             onPressed: _navigateToSettings,
           ),
           IconButton(
             icon: Icon(Icons.location_on),
+            color: Colors.black,
+
             onPressed: _changeLocation,
           ),
         ],
@@ -109,7 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Background image
                 Positioned.fill(
                   child: Image.asset(
-                    weatherImages[_weatherData!.description.toLowerCase()] ?? weatherImages['default']!,
+                    weatherImages[
+                            _weatherData!.main] ??
+                        weatherImages['default']!,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -139,7 +165,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 final temperature = settingsProvider.isCelsius
                                     ? _weatherData!.temperature
                                     : (_weatherData!.temperature * 9 / 5) + 32;
-                                final unit = settingsProvider.isCelsius ? '°C' : '°F';
+                                final unit =
+                                    settingsProvider.isCelsius ? '°C' : '°F';
                                 return Text(
                                   'Temperature: ${temperature.toStringAsFixed(1)}$unit',
                                   style: TextStyle(

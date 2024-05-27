@@ -1,12 +1,16 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+enum TemperatureUnit { celsius, fahrenheit }
 
 class SettingsProvider extends ChangeNotifier {
-  bool _isCelsius = true;
+  TemperatureUnit _temperatureUnit = TemperatureUnit.celsius;
 
-  bool get isCelsius => _isCelsius;
+  TemperatureUnit get temperatureUnit => _temperatureUnit;
 
-  void toggleTemperatureUnit() {
-    _isCelsius = !_isCelsius;
+  void setTemperatureUnit(TemperatureUnit unit) {
+    _temperatureUnit = unit;
     notifyListeners();
   }
+
+  bool get isCelsius => _temperatureUnit == TemperatureUnit.celsius;
 }
