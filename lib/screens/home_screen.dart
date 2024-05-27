@@ -4,6 +4,7 @@ import 'package:weather_api_project/models/weather_data.dart';
 import 'package:weather_api_project/services/weather_api_service.dart';
 import 'package:weather_api_project/screens/settings_screen.dart';
 import 'package:weather_api_project/providers/settings_provider.dart';
+import 'package:weather_api_project/widgets/weather_card.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -17,15 +18,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Map weather descriptions to their corresponding asset paths
   Map<String, String> weatherImages = {
-    'Haze': 'assets/hazy.jpeg',
+    'Haze': 'assets/hazy.jpg',
     'Rain': 'assets/rain.jpeg',
     'Clouds': 'assets/cloudy.jpeg',
-    'sunny': 'assets/sunny.jpeg',
+    'Sunny': 'assets/sunny.jpeg',
     'Snow': 'assets/snow.jpeg',
     'Thunderstorm': 'assets/thunderstorm.jpeg',
-    'Ash' : 'assets/ash.jpg',
-    'Drizzle' : 'assets/drizzle.jpg',
-    'Tornado' : 'assets/tornado.jpg',
+    'Ash': 'assets/ash.jpg',
+    'Drizzle': 'assets/drizzle.jpg',
+    'Tornado': 'assets/tornado.jpg',
     'default': 'assets/default.jpeg', // Fallback image
   };
 
@@ -37,8 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _fetchWeatherData(String location) async {
     try {
-      WeatherData weatherData =
-          await _weatherApiService.getWeatherData(location);
+      WeatherData weatherData = await _weatherApiService.getWeatherData(location);
       setState(() {
         _weatherData = weatherData;
       });
@@ -63,22 +63,22 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         String newLocation = "";
         return AlertDialog(
-          title: Text("Enter Location"),
+          title: const Text("Enter Location"),
           content: TextField(
             onChanged: (value) {
               newLocation = value;
             },
-            decoration: InputDecoration(hintText: "Enter location"),
+            decoration: const InputDecoration(hintText: "Enter location"),
           ),
           actions: [
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("OK"),
+              child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();
                 setState(() {
@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         elevation: 6,
-        title: Row(
+        title: const Row(
           children: [
             Expanded(
               child: Text(
@@ -118,14 +118,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: const Icon(Icons.settings),
             color: Colors.black,
             onPressed: _navigateToSettings,
           ),
           IconButton(
-            icon: Icon(Icons.location_on),
+            icon: const Icon(Icons.location_on),
             color: Colors.black,
-
             onPressed: _changeLocation,
           ),
         ],
@@ -136,67 +135,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Background image
                 Positioned.fill(
                   child: Image.asset(
-                    weatherImages[
-                            _weatherData!.main] ??
-                        weatherImages['default']!,
+                    weatherImages[_weatherData!.main] ?? weatherImages['default']!,
                     fit: BoxFit.cover,
                   ),
                 ),
-                // Weather details
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.black54,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              'City: ${_weatherData!.cityName}',
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Consumer<SettingsProvider>(
-                              builder: (context, settingsProvider, child) {
-                                final temperature = settingsProvider.isCelsius
-                                    ? _weatherData!.temperature
-                                    : (_weatherData!.temperature * 9 / 5) + 32;
-                                final unit =
-                                    settingsProvider.isCelsius ? '°C' : '°F';
-                                return Text(
-                                  'Temperature: ${temperature.toStringAsFixed(1)}$unit',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                );
-                              },
-                            ),
-                            Text(
-                              'Description: ${_weatherData!.description}',
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                // Weather card container
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.3, 
+                    margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: WeatherCard(weatherData: _weatherData!),
                       ),
-                    ],
+                    
                   ),
                 ),
               ],
             )
-          : Center(child: CircularProgressIndicator()),
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
